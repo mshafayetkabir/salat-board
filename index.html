@@ -277,7 +277,7 @@ var SETTINGS = {
   //   "auto" = use the time zone of the device that opens the page.
   //   "" (empty) = ignore the name and use the fixed utcOffset below.
   // Remember to change lat and lng above when you change the time zone.
-  timeZone: "Asia/Dhaka",
+  timeZone: "auto",
   utcOffset: 6,                    // Fixed hours from UTC (Bangladesh = 6). Used only if timeZone is "" or not recognised
   use24Hour: false,                // false = 12-hour clock with AM/PM, true = 24-hour clock
 
@@ -288,7 +288,7 @@ var SETTINGS = {
     bangla:  false,                 // Bangla date (Bangladesh revised calendar)
     arabic:  false                  // Arabic (Hijri / Islamic) date, written in Bangla
   },
-  hijriOffsetDays: 0,              // Arabic (Hijri) date adjustment in days. Use -1 if local moon sighting is a day behind Saudi Arabia
+  hijriOffsetDays: -1,              // Arabic (Hijri) date adjustment in days. Use -1 if local moon sighting is a day behind Saudi Arabia
 
   /* ---- 4. Which prayers to show -------------------------------- */
   // Put the prayers you want to HIDE inside the brackets.
