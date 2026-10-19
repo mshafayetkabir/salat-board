@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>Prayer times</title>
+<title>Prayer Times</title>
 
 <!-- Fonts: Bricolage Grotesque (numbers and headings) and Hanken Grotesk (body text).
      If the fonts cannot load, the page falls back to system fonts automatically. -->
@@ -59,7 +59,7 @@ main{position:relative;z-index:1;max-width:1500px;margin:0 auto;padding:clamp(.7
   display:flex;flex-direction:column;height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
   height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 
-/* HEADER: company name on the left, sunrise and sunset in the middle, dates on the right */
+/* HEADER: institute name on the left, sunrise and sunset in the middle, dates on the right */
 header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.9rem 1.5rem}
 h1{margin:0;font:800 clamp(1.2rem,2.6vw,1.9rem)/1.15 var(--display);letter-spacing:-.01em}
 .brand{display:flex;flex-direction:column;align-items:flex-start}
@@ -205,18 +205,18 @@ h1{margin:0;font:800 clamp(1.2rem,2.6vw,1.9rem)/1.15 var(--display);letter-spaci
 <body>
 <main>
 
-  <!-- Place name and today's date (both filled in by the script) -->
+  <!-- Institute name, place name and today's dates (filled in by the script) -->
   <header>
     <div class="brand">
       <!-- HEADER TITLE: keep ONE of the two options below and comment out the other. -->
 
-      <!-- OPTION A: company NAME (active now) -->
-      <h1 id="company">Bangladesh-China Power Company Ltd.</h1>
+      <!-- OPTION A: institute NAME (active now) -->
+      <h1 id="company">Full Institute Name</h1>
 
-      <!-- OPTION B: company LOGO, 2:3 ratio (width 2, height 3).
+      <!-- OPTION B: institute LOGO, 2:3 ratio (width 2, height 3).
            To use it: comment out OPTION A above, remove the comment marks around the line below,
            and put your logo file (for example logo.png) in the same folder as this page.
-      <img class="logo" src="logo.png" alt="Bangladesh-China Power Company Ltd.">  -->
+      <img class="logo" src="logo.png" alt="Full Institute Name">  -->
       
 
       <p class="place" id="place">Dhaka, Bangladesh</p>
@@ -263,28 +263,46 @@ h1{margin:0;font:800 clamp(1.2rem,2.6vw,1.9rem)/1.15 var(--display);letter-spaci
    ============================================================== */
 var SETTINGS = {
 
-  /* ---- 1. Place ------------------------------------------------ */
-  companyName: "Prayer Timer",  // Header title
-  placeName: "Dhaka, Bangladesh",  // Small line under the header title
-  lat: 23.8103,                    // Latitude of your city
-  lng: 90.4125,                    // Longitude of your city
-  utcOffset: 6,                    // Hours from UTC (Bangladesh = 6)
+  /* ---- 1. Institute and place ----------------------------------- */
+  companyName: "Salat Board",   // Header title (full name of your institute / company / mosque)
+  shortName: "SB",    // Short name, used in the browser tab title
+  placeName: "Dhaka, Bangladesh",       // Small line under the header title
+  lat: 23.8103,                         // Latitude of your city
+  lng: 90.4125,                         // Longitude of your city
+
+  /* ---- 2. Time zone and clock ----------------------------------- */
+  // timeZone: the time zone name (IANA name) of your place. Daylight saving is handled automatically.
+  //   Examples: "Asia/Dhaka", "Asia/Riyadh", "Asia/Karachi", "Asia/Kolkata", "Asia/Dubai",
+  //             "Europe/London", "America/New_York", "Australia/Sydney"
+  //   "auto" = use the time zone of the device that opens the page.
+  //   "" (empty) = ignore the name and use the fixed utcOffset below.
+  // Remember to change lat and lng above when you change the time zone.
+  timeZone: "Asia/Dhaka",
+  utcOffset: 6,                    // Fixed hours from UTC (Bangladesh = 6). Used only if timeZone is "" or not recognised
   use24Hour: false,                // false = 12-hour clock with AM/PM, true = 24-hour clock
+
+  /* ---- 3. Dates -------------------------------------------------- */
+  // true = show, false = hide. Hide all three to remove the date area completely.
+  showDates: {
+    english: true,                 // English date, for example "Monday, 19 October 2026"
+    bangla:  false,                 // Bangla date (Bangladesh revised calendar)
+    arabic:  false                  // Arabic (Hijri / Islamic) date, written in Bangla
+  },
   hijriOffsetDays: 0,              // Arabic (Hijri) date adjustment in days. Use -1 if local moon sighting is a day behind Saudi Arabia
 
-  /* ---- 2. Which prayers to show -------------------------------- */
+  /* ---- 4. Which prayers to show -------------------------------- */
   // Put the prayers you want to HIDE inside the brackets.
   // Choices: "fajr", "dhuhr", "asr", "maghrib", "isha"
   // Example: hiddenPrayers: ["fajr", "asr"]   (shows only Dhuhr, Maghrib, Isha)
   // Leave it empty [] to show all five.
   hiddenPrayers: [],
 
-  /* ---- 3. Calculation method ------------------------------------ */
+  /* ---- 5. Calculation method ------------------------------------ */
   fajrAngle: 18,   // Sun angle below the horizon for Fajr  (Karachi method = 18)
   ishaAngle: 18,   // Sun angle below the horizon for Isha  (Karachi method = 18)
   asrFactor: 2,    // 2 = Hanafi Asr (later),  1 = Shafi / Maliki / Hanbali Asr (earlier)
 
-  /* ---- 4. Fine tuning ------------------------------------------- */
+  /* ---- 6. Fine tuning ------------------------------------------- */
   // Move a calculated time earlier or later, in minutes.
   // Use a negative number for earlier. Example: maghrib: 3  means 3 minutes later.
   // "sunrise" only changes the sunrise line and the end of Fajr.
@@ -294,7 +312,7 @@ var SETTINGS = {
   // Example: fajr: "05:10"   or   isha: "19:45".   Use null to calculate it.
   fixedTimes: { sunrise: null, sunset: null, fajr: null, dhuhr: null, asr: null, maghrib: null, isha: null },
 
-  /* ---- 5. Jamat (congregation) time, optional -------------------- */
+  /* ---- 7. Jamat (congregation) time, optional -------------------- */
   // The big time on each card is the jamat time. For each prayer you can enter:
   //   a number   = minutes after the prayer starts   (example: dhuhr: 15)
   //   "HH:MM"    = a fixed jamat time, 24-hour       (example: asr: "16:30")
@@ -332,6 +350,36 @@ var SETTINGS = {
     return (h ? h + "h " : "") + (m % 60) + "m";
   }
 
+  /* ---------- Time zone ----------
+     Works out how many hours the chosen place is ahead of UTC at any moment.
+     With a named time zone (SETTINGS.timeZone) daylight saving is included.
+     With no name it falls back to the fixed SETTINGS.utcOffset. */
+  var zoneName = "", zoneFmt = null, zone = S.timeZone;
+  if (zone === "auto") {
+    try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) { zone = ""; }
+  }
+  if (zone) {
+    try {
+      zoneFmt = new Intl.DateTimeFormat("en-US", { timeZone: zone, hourCycle: "h23",
+        year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric" });
+      zoneName = zone;
+    } catch(e) {
+      if (window.console) console.warn("Unknown time zone \"" + zone + "\". Using utcOffset instead.");
+    }
+  }
+  // UTC offset (in hours) of the chosen place at a moment in time (milliseconds)
+  function offsetAt(ms){
+    if (!zoneName) return +S.utcOffset || 0;
+    var t = Math.floor(ms / 1000) * 1000, o = {};
+    zoneFmt.formatToParts(new Date(t)).forEach(function(p){ o[p.type] = p.value; });
+    return (Date.UTC(+o.year, +o.month - 1, +o.day, (+o.hour) % 24, +o.minute, +o.second) - t) / 3600000;
+  }
+  // UTC offset for a calendar day (year, month 0-11, day), measured around local noon
+  function offsetForDay(y, m, d){
+    var u = Date.UTC(y, m, d, 12);
+    return offsetAt(u - offsetAt(u) * 3600000);
+  }
+
   /* ---------- Sun position (astronomy) ----------
      Works out the sun's declination and the equation of time for a given
      date. These two numbers are all we need to find prayer times. */
@@ -353,9 +401,10 @@ var SETTINGS = {
      Your offsets and fixed times from SETTINGS are applied here, so every
      other number on the page (duration, countdown) follows automatically. */
   function compute(y, m, d){
-    var jd = Date.UTC(y, m, d, 12 - S.utcOffset) / 86400000 + 2440587.5,
+    var off = offsetForDay(y, m, d),                         // hours from UTC on this day in your time zone
+        jd = (Date.UTC(y, m, d, 12) - off * 3600000) / 86400000 + 2440587.5,
         p = sun(jd), lat = S.lat * R,
-        noon = 12 + S.utcOffset - S.lng / 15 - p.eqt;       // solar noon
+        noon = 12 + off - S.lng / 15 - p.eqt;               // solar noon
 
     // Hours between solar noon and the moment the sun is at a given angle
     function T(a){
@@ -394,11 +443,6 @@ var SETTINGS = {
     return (+a[0]) + (+a[1]) / 60;
   }
 
-  /* ---------- Jamat time used for the countdown and highlights ----------
-     Returns the jamat time of a prayer in hours. If no jamat time is set
-     for that prayer, the start time is used instead. */
-  function jt(k){ var j = jamatFor(k, T[k]); return j === null ? T[k] : j; }
-
   /* ---------- Build the prayer cards once ----------
      Hidden prayers (from SETTINGS.hiddenPrayers) are never created. */
   var visible = KEYS.filter(function(k){ return S.hiddenPrayers.indexOf(k) === -1; });
@@ -420,6 +464,19 @@ var SETTINGS = {
   /* ---------- Static text ---------- */
   $("place").textContent = S.placeName;
   if ($("company")) $("company").textContent = S.companyName;   // skipped when the logo option is used
+  var logo = document.querySelector(".logo");
+  if (logo) logo.alt = S.companyName;                           // only when the logo option is used
+  document.title = (S.shortName || S.companyName) + " Prayer Times";
+
+  /* ---------- Show or hide the dates (SETTINGS.showDates) ----------
+     A date that is switched off is removed from the page, so the others close up.
+     If all three are off, the whole date area is removed. */
+  var SD = S.showDates || {},
+      showEn = SD.english !== false, showBn = SD.bangla !== false, showAr = SD.arabic !== false;
+  if (!showEn) $("date").remove();
+  if (!showBn) $("dateBn").remove();
+  if (!showAr) $("dateHb").remove();
+  if (!showEn && !showBn && !showAr) document.querySelector(".dates").remove();
 
   var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   var DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -515,7 +572,7 @@ var SETTINGS = {
   /* ---------- Runs four times a second ---------- */
   function tick(){
     // "Now" in your chosen time zone (independent of the device time zone)
-    var n = new Date(Date.now() + S.utcOffset * 3600000),
+    var n = new Date(Date.now() + offsetAt(Date.now()) * 3600000),
         y = n.getUTCFullYear(), mo = n.getUTCMonth(), d = n.getUTCDate(),
         H = n.getUTCHours(), M = n.getUTCMinutes(), Sx = n.getUTCSeconds(),
         key = y + "-" + mo + "-" + d;
@@ -525,10 +582,9 @@ var SETTINGS = {
       dayKey = key;
       T = compute(y, mo, d);
       TN = compute(y, mo, d + 1);
-      $("date").textContent = DAYS[n.getUTCDay()] + ", " + d + " " + MONTHS[mo] + " " + y;
-      var hj = hijri(y, mo, d);
-      $("dateBn").textContent = bnDate(y, mo, d);
-      $("dateHb").textContent = hj || "";
+      if (showEn) $("date").textContent = DAYS[n.getUTCDay()] + ", " + d + " " + MONTHS[mo] + " " + y;
+      if (showBn) $("dateBn").textContent = bnDate(y, mo, d);
+      if (showAr) $("dateHb").textContent = hijri(y, mo, d) || "";
       render();
     }
 
